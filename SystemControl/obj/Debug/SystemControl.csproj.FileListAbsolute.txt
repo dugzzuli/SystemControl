@@ -1,0 +1,9 @@
+H:\C#github\tsne_CSharp\tsneCSharp\SystemControl\bin\Debug\SystemControl.exe.config
+H:\C#github\tsne_CSharp\tsneCSharp\SystemControl\bin\Debug\SystemControl.exe
+H:\C#github\tsne_CSharp\tsneCSharp\SystemControl\bin\Debug\SystemControl.pdb
+H:\C#github\tsne_CSharp\tsneCSharp\SystemControl\obj\Debug\SystemControl.csprojResolveAssemblyReference.cache
+H:\C#github\tsne_CSharp\tsneCSharp\SystemControl\obj\Debug\SystemControl.Main.resources
+H:\C#github\tsne_CSharp\tsneCSharp\SystemControl\obj\Debug\SystemControl.Properties.Resources.resources
+H:\C#github\tsne_CSharp\tsneCSharp\SystemControl\obj\Debug\SystemControl.csproj.GenerateResource.Cache
+H:\C#github\tsne_CSharp\tsneCSharp\SystemControl\obj\Debug\SystemControl.exe
+H:\C#github\tsne_CSharp\tsneCSharp\SystemControl\obj\Debug\SystemControl.pdb
