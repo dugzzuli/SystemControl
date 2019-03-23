@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "tsneCSharpDemo", "tsneCShar
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SystemControl", "SystemControl\SystemControl.csproj", "{A2AB8AA7-2441-431A-9A50-E986AE9FCE71}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebUpload", "WebUpload\WebUpload.csproj", "{51FA5889-A189-4E73-9601-FDBCE2E9B4AD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{A2AB8AA7-2441-431A-9A50-E986AE9FCE71}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A2AB8AA7-2441-431A-9A50-E986AE9FCE71}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A2AB8AA7-2441-431A-9A50-E986AE9FCE71}.Release|Any CPU.Build.0 = Release|Any CPU
+		{51FA5889-A189-4E73-9601-FDBCE2E9B4AD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{51FA5889-A189-4E73-9601-FDBCE2E9B4AD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{51FA5889-A189-4E73-9601-FDBCE2E9B4AD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{51FA5889-A189-4E73-9601-FDBCE2E9B4AD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

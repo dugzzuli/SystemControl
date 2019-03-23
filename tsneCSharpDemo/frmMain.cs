@@ -125,7 +125,7 @@ namespace tsneCSharpDemo
 
                 foreach (Point p in this.points)
                 {
-                    e.Graphics.FillRectangle(Brushes.Blue, p.X, p.Y, 2, 2);
+                    e.Graphics.FillRectangle(Brushes.Red, p.X, p.Y, 2, 2);
                     e.Graphics.DrawString(srcRowHeader[n], this.Font, Brushes.Black, p.X, p.Y);
                     n++;
                 }
