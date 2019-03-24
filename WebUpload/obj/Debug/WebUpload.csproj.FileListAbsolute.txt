@@ -1,1 +1,6 @@
 H:\C#github\tsne_CSharp\tsneCSharp\WebUpload\bin\Debug\WebUpload.exe.config
+H:\C#github\tsne_CSharp\tsneCSharp\WebUpload\bin\Debug\WebUpload.exe
+H:\C#github\tsne_CSharp\tsneCSharp\WebUpload\bin\Debug\WebUpload.pdb
+H:\C#github\tsne_CSharp\tsneCSharp\WebUpload\obj\Debug\WebUpload.csprojResolveAssemblyReference.cache
+H:\C#github\tsne_CSharp\tsneCSharp\WebUpload\obj\Debug\WebUpload.exe
+H:\C#github\tsne_CSharp\tsneCSharp\WebUpload\obj\Debug\WebUpload.pdb

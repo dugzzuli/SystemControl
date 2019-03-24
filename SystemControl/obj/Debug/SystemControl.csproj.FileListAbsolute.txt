@@ -50,3 +50,4 @@ H:\C#github\tsne_CSharp\tsneCSharp\SystemControl\bin\Debug\tr\ZedGraph.resources
 H:\C#github\tsne_CSharp\tsneCSharp\SystemControl\bin\Debug\zh-cn\ZedGraph.resources.dll
 H:\C#github\tsne_CSharp\tsneCSharp\SystemControl\bin\Debug\zh-tw\ZedGraph.resources.dll
 H:\C#github\tsne_CSharp\tsneCSharp\SystemControl\obj\Debug\SystemControl.Operate.resources
+H:\C#github\tsne_CSharp\tsneCSharp\SystemControl\obj\Debug\SystemControl.TableSelectDialog.resources
