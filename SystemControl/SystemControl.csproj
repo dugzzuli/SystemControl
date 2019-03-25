@@ -129,6 +129,7 @@
     </Compile>
     <Compile Include="UploadFile.cs" />
     <Compile Include="UploadFileUtil.cs" />
+    <Compile Include="WebUtil.cs" />
     <EmbeddedResource Include="main.resx">
       <DependentUpon>main.cs</DependentUpon>
     </EmbeddedResource>
