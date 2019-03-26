@@ -167,7 +167,7 @@ namespace SystemControl
 
 
             // Add the curve
-            LineItem myCurve = myPane.AddCurve("G1", list1, Color.Blue, SymbolType.Diamond);
+            LineItem myCurve = myPane.AddCurve("G1", list1, Color.Red, SymbolType.Diamond);
             myCurve.Line.IsVisible = false;
             myCurve.Symbol.Border.IsVisible = false;
             myCurve.Symbol.Fill = new Fill(Color.Blue);

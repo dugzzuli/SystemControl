@@ -1,4 +1,6 @@
-﻿using Accord.Statistics.Analysis;
+﻿using Accord.IO;
+using Accord.Statistics.Analysis;
+using MathWorks.MATLAB.NET.Arrays;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -18,6 +20,28 @@ namespace WebUpload
         {
 
 
+
+            //string localPath = "3sources.mat";
+
+            //// Create a .MAT reader for the file:
+            //var reader = new MatReader(localPath);
+            //MatNode data = reader["data"];
+            MatlabDemo.MeasureTools demo = new MatlabDemo.MeasureTools();
+
+
+            int[,] list = { { 1}, { 2} }; //列向量
+            int[,] list2 = { { 1 }, { 1} }; //列向量
+            MWArray a = 1;
+            MWArray array = new MWNumericArray(list);
+            MWArray array2 = new MWNumericArray(list2);
+            MWArray[] d=demo.CalcMetrics(3,array, array2);
+
+
+
+        }
+
+        private static void getPreAcc()
+        {
             // The correct and expected output values (as confirmed by a Gold
             //  standard rule, actual experiment or true verification)
             int[] expected = { 1, 1, 1, 0, 0, 0 };
@@ -28,16 +52,18 @@ namespace WebUpload
 
             PALabel p = new PALabel();
             StringBuilder sb = new StringBuilder();
-            expected.ToList().ForEach(u => {
+            expected.ToList().ForEach(u =>
+            {
                 sb.Append(u + ",");
             });
 
             StringBuilder sb2 = new StringBuilder();
-            predicted.ToList().ForEach(u => {
+            predicted.ToList().ForEach(u =>
+            {
                 sb2.Append(u + ",");
             });
 
-            p.Predicted =sb2.ToString().Trim(',');
+            p.Predicted = sb2.ToString().Trim(',');
             p.Expected = sb.ToString().Trim(',');
 
             Console.WriteLine(JsonConvert.SerializeObject(p));
@@ -49,6 +75,7 @@ namespace WebUpload
             //Console.WriteLine(matrix.NormalizedMutualInformation);
             Console.WriteLine(Post3("http://localhost:8080/SpringNMF/demo/getClusterInc", dic));
         }
+
         public  static string Post2(string Url, string jsonParas)
         {
             string strURL = Url ;
