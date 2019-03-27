@@ -57,7 +57,7 @@ namespace SystemControl
         private void openfile_Click(object sender, EventArgs e)
         {
             OpenFileDialog openFileDialog = new OpenFileDialog();
-            openFileDialog.Filter = "文本文件|*.txt|csv文件|*.csv|Excel文件|*.xls|所有文件|*.*";
+            openFileDialog.Filter = "Excel文件|*.xls|csv文件|*.csv|文本文件|*.txt|所有文件|*.*";
             openFileDialog.RestoreDirectory = true;
             openFileDialog.FilterIndex = 1;
             if (openFileDialog.ShowDialog() == DialogResult.OK)
@@ -296,7 +296,7 @@ namespace SystemControl
                 Dictionary<string, string> dic = new Dictionary<string, string>();
                 dic.Add("Predicted", Predicted);
                 dic.Add("Expected", Expected);
-                String jsonResult=WebUtil.Post3("http://localhost:8080/SpringNMF/demo/getClusterInc", dic);
+                String jsonResult = WebUtil.Post3("http://localhost:8080/SpringNMF/demo/getClusterInc", dic);
 
                 MessageBox.Show(jsonResult);
             }
