@@ -26,7 +26,14 @@ namespace SystemControl
 {
     public partial class Operate : Form
     {
-        // Visually distinct colors used in the pie graphics
+        /// <summary>
+        /// 访问dugking的算法网站
+        /// </summary>
+        public static string Url_DUG = "http://localhost:8080/SpringNMF/demo/getClusterInc";
+
+        /// <summary>
+        /// 面板颜色选择
+        /// </summary>
         ColorSequenceCollection colors = new ColorSequenceCollection();
         /// <summary>
         /// 存储列名
@@ -42,10 +49,18 @@ namespace SystemControl
         /// 初始聚类个数
         /// </summary>
         int k = 0;
+        /// <summary>
+        /// 获取当前数据的一些属性 例如平均值 中值等
+        /// </summary>
         private DescriptiveAnalysis sda;
         double[][] observations; // the data points containing the mixture
-
-
+        /// <summary>
+        /// 默认视角个数
+        /// </summary>
+        public int viewNumSum = 1;
+        int currcentView = 0;
+        int multiViewFlag = 0;
+        public int Columnns = 5;
         TLearning learning;
         TClustering clustering;
 
@@ -66,8 +81,9 @@ namespace SystemControl
                 string extension = Path.GetExtension(fName);
 
                 fileDataName.Text = Path.GetFileName(fName);
-                dirLocal.Text=Path.GetDirectoryName(fName);
-                
+                dirLocal.Text = Path.GetDirectoryName(fName);
+
+                #region 加载csv文件
                 if (extension == ".csv")
                 {
                     CsvReader csvR = new CsvReader(fName, false);
@@ -89,8 +105,10 @@ namespace SystemControl
                             dgvDistributionMeasures.DataSource = sda.Measures;
                         }
                     }
+                    viewNumSum = 1;
 
                 }
+                #endregion
 
                 #region 加载excel
                 if (extension == ".xls" || extension == ".xlsx")
@@ -118,20 +136,105 @@ namespace SystemControl
                         }
 
                     }
-
-
+                    viewNumSum = 1;
                 }
 
                 #endregion
 
-                var target=sourceMatrix.GetColumn(sourceMatrix.GetLength(1) - 1);
+                if (multiViewFlag == 1)
+                {
+                    setLNView();
+                }
+                else
+                {
+                    nextView.Enabled = false;
+                    lastView.Enabled = false;
+                }
+
+                var target = sourceMatrix.GetColumn(sourceMatrix.GetLength(1) - 1);
                 cluterNum.Text = target.Distinct().Count().ToString();
                 numKMeans.Value = target.Distinct().Count();
                 numGaussians.Value = target.Distinct().Count();
                 samplesNUm.Text = sourceMatrix.GetLength(0).ToString();
+                viewNum.Text = viewNumSum.ToString();
+                curView.Text = (currcentView + 1).ToString();
                 attributeLength.Text = sourceMatrix.GetLength(1).ToString();
+
+                if (viewNumSum == 1)
+                {
+                    adjustView.Enabled = false;
+                }
+                else
+                {
+                    adjustView.Enabled = true;
+                }
             }
             //uploadFile(fName);
+        }
+
+        private void setLNView()
+        {
+            if (currcentView == 0)
+            {
+                lastView.Enabled = false;
+                nextView.Enabled = true;
+            }
+            else if (currcentView == viewNumSum - 1)
+            {
+                lastView.Enabled = true;
+                nextView.Enabled = false;
+            }
+            else
+            {
+                lastView.Enabled = true;
+                nextView.Enabled = true;
+            }
+
+
+
+        }
+        /// <summary>
+        /// 读取
+        /// </summary>
+        private MatNode readMatData(out int attribute)
+        {
+            var reader = new MatReader(fName);
+            MatNode data = reader["data"];
+            viewNumSum = data.Count;
+            multiViewFlag = 1;
+            byte[,] data1 = (byte[,])data[currcentView].Value;
+            DataTable tableSource = new DataTable();
+            data1 = data1.Transpose();
+            DataTable dt = new DataTable();
+            attribute = data1.GetLength(0);
+            for (int i = 0; i < Columnns; i++)
+            {
+                dt.Columns.Add(new DataColumn((i + 1).ToString()));
+            }
+
+            for (int i = 0; i < data1.GetLength(0); i++)
+            {
+                DataRow dr = dt.NewRow();
+                for (int j = 0; j < Columnns; j++)
+                {
+                    dr[j] = data1[i, j];
+                }
+                dt.Rows.Add(dr);
+
+            }
+
+            tableSource = dt;
+            sourceMatrix = tableSource.ToMatrix(out columnNames);
+
+            this.dgvLearningSource.DataSource = tableSource;
+
+            CreateScatterplot(graphInput, sourceMatrix);
+            if (columnNames.GetTotalLength() > 0)
+            {
+                sda = new DescriptiveAnalysis(columnNames).Learn(sourceMatrix.ToJagged());
+                dgvDistributionMeasures.DataSource = sda.Measures;
+            }
+            return reader["truelabel"];
         }
 
         /// <summary>
@@ -257,7 +360,7 @@ namespace SystemControl
             double[][] inputs = table.GetColumns(0, 1).ToJagged();
             //用来进行训练的数据
             double[,] table2 = table;
-            observations = table2.RemoveColumn(table.GetLength(1)-1).ToJagged();
+            observations = table2.RemoveColumn(table.GetLength(1) - 1).ToJagged();
 
             try
             {
@@ -274,20 +377,22 @@ namespace SystemControl
                 // Classify all instances in mixture data
                 int[] classifications = clustering.Decide(observations);
 
-                
+
                 updateGraph(classifications);
 
 
                 int[] expected = table.GetColumn(table.GetLength(1) - 1).ToInt32();
-                    ;
+                ;
 
                 StringBuilder sb = new StringBuilder();
-                expected.ToList().ForEach(u => {
+                expected.ToList().ForEach(u =>
+                {
                     sb.Append(u + ",");
                 });
 
                 StringBuilder sb2 = new StringBuilder();
-                classifications.ToList().ForEach(u => {
+                classifications.ToList().ForEach(u =>
+                {
                     sb2.Append(u + ",");
                 });
                 String Predicted = sb2.ToString().Trim(',');
@@ -296,7 +401,7 @@ namespace SystemControl
                 Dictionary<string, string> dic = new Dictionary<string, string>();
                 dic.Add("Predicted", Predicted);
                 dic.Add("Expected", Expected);
-                String jsonResult = WebUtil.Post3("http://localhost:8080/SpringNMF/demo/getClusterInc", dic);
+                String jsonResult = WebUtil.Post3(Url_DUG, dic);
 
                 MessageBox.Show(jsonResult);
             }
@@ -306,7 +411,7 @@ namespace SystemControl
                     "The learned clustering might still be usable.";
             }
 
-         
+
         }
 
         private void updateGraph(int[] classifications)
@@ -365,7 +470,7 @@ namespace SystemControl
 
         private void numKMeans_ValueChanged(object sender, EventArgs e)
         {
-            this.k= (int)numKMeans.Value;
+            this.k = (int)numKMeans.Value;
         }
 
         public void CreateScatterplot(ZedGraphControl zgc, double[][] graph, int n)
@@ -418,6 +523,96 @@ namespace SystemControl
             zgc.Invalidate();
         }
 
+        private void lastView_Click(object sender, EventArgs e)
+        {
+            int attribute = 0;
+            currcentView = currcentView - 1;
+            if (currcentView < int.Parse(viewNum.Text) && currcentView >= 0)
+            {
+                readMatData(out attribute);
+                curView.Text = (currcentView + 1).ToString();
+                setLNView();
+            }
+        }
+
+        private void nextView_Click(object sender, EventArgs e)
+        {
+            int attribute = 0;
+            currcentView = currcentView + 1;
+            if (currcentView < int.Parse(viewNum.Text) && currcentView >= 0)
+            {
+                readMatData(out attribute);
+                curView.Text = (currcentView + 1).ToString();
+                setLNView();
+            }
+        }
+
+        private void openMat_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.Filter = "Mat文件|*.mat";
+            openFileDialog.RestoreDirectory = true;
+            openFileDialog.FilterIndex = 1;
+            if (openFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                fName = openFileDialog.FileName;
+                string extension = Path.GetExtension(fName);
+
+                fileDataName.Text = Path.GetFileName(fName);
+                dirLocal.Text = Path.GetDirectoryName(fName);
+
+                MatNode gnd = null;
+                int attribute = 0;
+                #region 读取mat文件
+                if (extension == ".mat")
+                {
+                    gnd = readMatData(out attribute);
+                }
+                #endregion
+
+                if (multiViewFlag == 1)
+                {
+                    setLNView();
+                }
+                else
+                {
+                    nextView.Enabled = false;
+                    lastView.Enabled = false;
+                }
+                byte[,] data1 = (byte[,])gnd[0].Value; ;
+                var target = data1.Transpose().To<int[,]>().GetColumn(0);
+                cluterNum.Text = target.Distinct().Count().ToString();
+                numKMeans.Value = target.Distinct().Count();
+                numGaussians.Value = target.Distinct().Count();
+                samplesNUm.Text = sourceMatrix.GetLength(1).ToString();
+                viewNum.Text = viewNumSum.ToString();
+                curView.Text = (currcentView + 1).ToString();
+                attributeLength.Text = attribute.ToString();
+
+                if (viewNumSum == 1)
+                {
+                    adjustView.Enabled = false;
+                }
+                else
+                {
+                    adjustView.Enabled = true;
+                }
+            }
+        }
+
+        private void dgvLearningSource_RowPostPaint(object sender, DataGridViewRowPostPaintEventArgs e)
+        {
+            Rectangle rectangle = new Rectangle(e.RowBounds.Location.X,
+       e.RowBounds.Location.Y,
+       dgvLearningSource.RowHeadersWidth - 4,
+       e.RowBounds.Height);
+            TextRenderer.DrawText(e.Graphics,
+                  (e.RowIndex + 1).ToString(),
+                   dgvLearningSource.RowHeadersDefaultCellStyle.Font,
+                   rectangle,
+                   dgvLearningSource.RowHeadersDefaultCellStyle.ForeColor,
+                   TextFormatFlags.VerticalCenter | TextFormatFlags.Right);
+        }
     }
 
 

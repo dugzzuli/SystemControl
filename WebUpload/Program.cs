@@ -18,26 +18,60 @@ namespace WebUpload
 
         static void Main(string[] args)
         {
+            string localPath = "3sources.mat";
+
+            // Create a .MAT reader for the file:
+            var reader = new MatReader(localPath);
+            MatNode data = reader["data"];
+            byte[,] data1 =(byte[,])data[0].Value;
+            Console.WriteLine(data1);
+            double[,] mat = new double[data1.GetLength(0), data1.GetLength(1)];
+            for (int i = 0; i < data1.GetLength(0); i++)
+            {
+                for (int j = 0; j < data1.GetLength(1); j++)
+                {
+                    mat[i, j] = data1[i, j];
+                }
+               
+            }
+
+        }
+        /// <summary>  
+        /// byte数组转int数组  
+        /// </summary>  
+        /// <param name="src">源byte数组</param>  
+        /// <param name="offset">起始位置</param>  
+        /// <returns></returns>  
+        public static int[] bytesToInt(byte[] src, int offset)
+        {
+            int[] values = new int[src.Length / 4];
+            for (int i = 0; i < src.Length / 4; i++)
+            {
+                int value = (int)((src[offset] & 0xFF)
+                        | ((src[offset + 1] & 0xFF) << 8)
+                        | ((src[offset + 2] & 0xFF) << 16)
+                        | ((src[offset + 3] & 0xFF) << 24));
+                values[i] = value;
+
+                offset += 4;
+            }
+            return values;
+        }
 
 
 
-            //string localPath = "3sources.mat";
 
-            //// Create a .MAT reader for the file:
-            //var reader = new MatReader(localPath);
-            //MatNode data = reader["data"];
+        private static void matlabGet()
+        {
             MatlabDemo.MeasureTools demo = new MatlabDemo.MeasureTools();
 
 
-            int[,] list = { { 1}, { 2} }; //列向量
-            int[,] list2 = { { 1 }, { 1} }; //列向量
+            int[,] list = { { 1 }, { 2 } }; //列向量
+            int[,] list2 = { { 1 }, { 1 } }; //列向量
             MWArray a = 1;
             MWArray array = new MWNumericArray(list);
             MWArray array2 = new MWNumericArray(list2);
-            MWArray[] d=demo.CalcMetrics(3,array, array2);
-
-
-
+            MWArray[] d = demo.CalcMetrics(3, array, array2);
         }
 
         private static void getPreAcc()

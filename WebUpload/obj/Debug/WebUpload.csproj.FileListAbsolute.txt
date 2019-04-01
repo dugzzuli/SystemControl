@@ -1,7 +1,6 @@
 H:\C#github\tsne_CSharp\tsneCSharp\WebUpload\bin\Debug\WebUpload.exe.config
 H:\C#github\tsne_CSharp\tsneCSharp\WebUpload\bin\Debug\WebUpload.exe
 H:\C#github\tsne_CSharp\tsneCSharp\WebUpload\bin\Debug\WebUpload.pdb
-H:\C#github\tsne_CSharp\tsneCSharp\WebUpload\obj\Debug\WebUpload.csprojResolveAssemblyReference.cache
 H:\C#github\tsne_CSharp\tsneCSharp\WebUpload\obj\Debug\WebUpload.exe
 H:\C#github\tsne_CSharp\tsneCSharp\WebUpload\obj\Debug\WebUpload.pdb
 H:\C#github\tsne_CSharp\tsneCSharp\WebUpload\bin\Debug\Accord.dll.config
@@ -88,3 +87,4 @@ H:\C#github\tsne_CSharp\tsneCSharp\WebUpload\bin\Debug\ko\System.Spatial.resourc
 H:\C#github\tsne_CSharp\tsneCSharp\WebUpload\bin\Debug\ru\System.Spatial.resources.dll
 H:\C#github\tsne_CSharp\tsneCSharp\WebUpload\bin\Debug\zh-Hans\System.Spatial.resources.dll
 H:\C#github\tsne_CSharp\tsneCSharp\WebUpload\bin\Debug\zh-Hant\System.Spatial.resources.dll
+H:\C#github\tsne_CSharp\tsneCSharp\WebUpload\obj\Debug\WebUpload.csprojResolveAssemblyReference.cache
