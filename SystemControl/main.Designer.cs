@@ -42,6 +42,7 @@
             this.使用帮助ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.算法集合ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.App_1 = new System.Windows.Forms.Panel();
+            this.button1 = new System.Windows.Forms.Button();
             this.datacluster = new System.Windows.Forms.Button();
             this.hnetwork = new System.Windows.Forms.Button();
             this.society = new System.Windows.Forms.Button();
@@ -51,7 +52,6 @@
             this.label3 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
-            this.button1 = new System.Windows.Forms.Button();
             this.menu_1.SuspendLayout();
             this.App_1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
@@ -158,6 +158,16 @@
             this.App_1.Size = new System.Drawing.Size(207, 309);
             this.App_1.TabIndex = 2;
             // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(28, 221);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(160, 44);
+            this.button1.TabIndex = 1;
+            this.button1.Text = "多视角聚类";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.datacluster_Click);
+            // 
             // datacluster
             // 
             this.datacluster.Location = new System.Drawing.Point(28, 164);
@@ -176,6 +186,7 @@
             this.hnetwork.TabIndex = 0;
             this.hnetwork.Text = "异质网络";
             this.hnetwork.UseVisualStyleBackColor = true;
+            this.hnetwork.Click += new System.EventHandler(this.hnetwork_Click);
             // 
             // society
             // 
@@ -240,16 +251,6 @@
             this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.pictureBox1.TabIndex = 5;
             this.pictureBox1.TabStop = false;
-            // 
-            // button1
-            // 
-            this.button1.Location = new System.Drawing.Point(28, 221);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(160, 44);
-            this.button1.TabIndex = 1;
-            this.button1.Text = "多视角聚类";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.datacluster_Click);
             // 
             // Main
             // 

@@ -2,6 +2,7 @@
 using Accord.Controls;
 using Accord.IO;
 using Accord.MachineLearning;
+using Accord.MachineLearning.Clustering;
 using Accord.Math;
 using Accord.Statistics.Analysis;
 using Accord.Statistics.Distributions.Fitting;
@@ -16,6 +17,7 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using SystemControl.Util;
 using ZedGraph;
 
 using TClustering = Accord.MachineLearning.IMulticlassClassifier<double[], int>;
@@ -36,16 +38,6 @@ namespace SystemControl
         /// </summary>
         ColorSequenceCollection colors = new ColorSequenceCollection();
         /// <summary>
-        /// 存储列名
-        /// </summary>
-        string[] columnNames; // stores the column names for the loaded data
-
-        /// <summary>
-        /// 原始数据矩阵
-        /// </summary>
-        double[,] sourceMatrix = null;
-        string fName = string.Empty;
-        /// <summary>
         /// 初始聚类个数
         /// </summary>
         int k = 0;
@@ -53,16 +45,17 @@ namespace SystemControl
         /// 获取当前数据的一些属性 例如平均值 中值等
         /// </summary>
         private DescriptiveAnalysis sda;
-        double[][] observations; // the data points containing the mixture
         /// <summary>
         /// 默认视角个数
         /// </summary>
-        public int viewNumSum = 1;
         int currcentView = 0;
-        int multiViewFlag = 0;
-        public int Columnns = 5;
+        private ReadOfficeFile readOfficeFile;
+
+
+        ReadMatData readMatDataUtil;
         TLearning learning;
         TClustering clustering;
+
 
         public Operate()
         {
@@ -77,71 +70,32 @@ namespace SystemControl
             openFileDialog.FilterIndex = 1;
             if (openFileDialog.ShowDialog() == DialogResult.OK)
             {
+                string fName = null;
                 fName = openFileDialog.FileName;
-                string extension = Path.GetExtension(fName);
+                readOfficeFile = new ReadOfficeFile(fName);
+                readOfficeFile.initReader(this);
+                fileDataName.Text = readOfficeFile.FileDataName ;
+                dirLocal.Text = readOfficeFile.DirLocal;
+                var target = readOfficeFile.getMatrixTarget();
+                cluterNum.Text = target.Distinct().Count().ToString();
+                numKMeans.Value = target.Distinct().Count();
+                numGaussians.Value = target.Distinct().Count();
+                samplesNUm.Text = readOfficeFile.getMatrixTargetLength().ToString();
+                viewNum.Text = ReadMatData.ViewNumSum.ToString();
+                curView.Text = (currcentView + 1).ToString();
+                attributeLength.Text = readOfficeFile.getMatrixTrainLength().ToString();
 
-                fileDataName.Text = Path.GetFileName(fName);
-                dirLocal.Text = Path.GetDirectoryName(fName);
+                this.dgvLearningSource.DataSource = readOfficeFile.TableSource;
 
-                #region 加载csv文件
-                if (extension == ".csv")
+                DrawUtil.CreateScatterplot(graphInput, readOfficeFile.getMatrixTrain());
+
+                if (ReadMatData.columnNames.GetTotalLength() > 0)
                 {
-                    CsvReader csvR = new CsvReader(fName, false);
-                    DataTable tableSource = csvR.ToTable();
-                    sourceMatrix = tableSource.ToMatrix(out columnNames);
-                    // Detect the kind of problem loaded.
-                    if (sourceMatrix.GetLength(1) == 2)
-                    {
-                        MessageBox.Show("Missing class column.");
-                    }
-                    else
-                    {
-                        this.dgvLearningSource.DataSource = tableSource;
-                        CreateScatterplot(graphInput, sourceMatrix);
-                        // Create and compute a new Simple Descriptive Analysis
-                        if (columnNames.GetTotalLength() > 0)
-                        {
-                            sda = new DescriptiveAnalysis(columnNames).Learn(sourceMatrix.ToJagged());
-                            dgvDistributionMeasures.DataSource = sda.Measures;
-                        }
-                    }
-                    viewNumSum = 1;
-
+                    sda = new DescriptiveAnalysis(ReadMatData.columnNames).Learn(readOfficeFile.getMatrixTrain().ToJagged());
+                    dgvDistributionMeasures.DataSource = sda.Measures;
                 }
-                #endregion
-
-                #region 加载excel
-                if (extension == ".xls" || extension == ".xlsx")
-                {
-                    ExcelReader db = new ExcelReader(fName, true, false);
-                    TableSelectDialog t = new TableSelectDialog(db.GetWorksheetList());
-                    if (t.ShowDialog(this) == DialogResult.OK)
-                    {
-                        DataTable tableSource = db.GetWorksheet(t.Selection);
-                        sourceMatrix = tableSource.ToMatrix(out columnNames);
-                        // Detect the kind of problem loaded.
-                        if (sourceMatrix.GetLength(1) == 2)
-                        {
-                            MessageBox.Show("Missing class column.");
-                        }
-                        else
-                        {
-                            this.dgvLearningSource.DataSource = tableSource;
-                            CreateScatterplot(graphInput, sourceMatrix);
-                            if (columnNames.GetTotalLength() > 0)
-                            {
-                                sda = new DescriptiveAnalysis(columnNames).Learn(sourceMatrix.ToJagged());
-                                dgvDistributionMeasures.DataSource = sda.Measures;
-                            }
-                        }
-
-                    }
-                    viewNumSum = 1;
-                }
-
-                #endregion
-
-                if (multiViewFlag == 1)
+            
+                if (ReadMatData.ViewNumSum == 1)
                 {
                     setLNView();
                 }
@@ -151,16 +105,9 @@ namespace SystemControl
                     lastView.Enabled = false;
                 }
 
-                var target = sourceMatrix.GetColumn(sourceMatrix.GetLength(1) - 1);
-                cluterNum.Text = target.Distinct().Count().ToString();
-                numKMeans.Value = target.Distinct().Count();
-                numGaussians.Value = target.Distinct().Count();
-                samplesNUm.Text = sourceMatrix.GetLength(0).ToString();
-                viewNum.Text = viewNumSum.ToString();
-                curView.Text = (currcentView + 1).ToString();
-                attributeLength.Text = sourceMatrix.GetLength(1).ToString();
+                
 
-                if (viewNumSum == 1)
+                if (ReadMatData.ViewNumSum == 1)
                 {
                     adjustView.Enabled = false;
                 }
@@ -172,6 +119,8 @@ namespace SystemControl
             //uploadFile(fName);
         }
 
+        
+
         private void setLNView()
         {
             if (currcentView == 0)
@@ -179,7 +128,7 @@ namespace SystemControl
                 lastView.Enabled = false;
                 nextView.Enabled = true;
             }
-            else if (currcentView == viewNumSum - 1)
+            else if (currcentView == ReadMatData.ViewNumSum - 1)
             {
                 lastView.Enabled = true;
                 nextView.Enabled = false;
@@ -193,99 +142,49 @@ namespace SystemControl
 
 
         }
-        /// <summary>
-        /// 读取
-        /// </summary>
-        private MatNode readMatData(out int attribute)
-        {
-            var reader = new MatReader(fName);
-            MatNode data = reader["data"];
-            viewNumSum = data.Count;
-            multiViewFlag = 1;
-            byte[,] data1 = (byte[,])data[currcentView].Value;
-            DataTable tableSource = new DataTable();
-            data1 = data1.Transpose();
-            DataTable dt = new DataTable();
-            attribute = data1.GetLength(0);
-            for (int i = 0; i < Columnns; i++)
-            {
-                dt.Columns.Add(new DataColumn((i + 1).ToString()));
-            }
-
-            for (int i = 0; i < data1.GetLength(0); i++)
-            {
-                DataRow dr = dt.NewRow();
-                for (int j = 0; j < Columnns; j++)
-                {
-                    dr[j] = data1[i, j];
-                }
-                dt.Rows.Add(dr);
-
-            }
-
-            tableSource = dt;
-            sourceMatrix = tableSource.ToMatrix(out columnNames);
-
-            this.dgvLearningSource.DataSource = tableSource;
-
-            CreateScatterplot(graphInput, sourceMatrix);
-            if (columnNames.GetTotalLength() > 0)
-            {
-                sda = new DescriptiveAnalysis(columnNames).Learn(sourceMatrix.ToJagged());
-                dgvDistributionMeasures.DataSource = sda.Measures;
-            }
-            return reader["truelabel"];
-        }
+       
+       
+      
 
         /// <summary>
-        /// 画散点图
+        /// mat图绘制
         /// </summary>
         /// <param name="zgc"></param>
         /// <param name="graph"></param>
-        public void CreateScatterplot(ZedGraphControl zgc, double[,] graph)
+        /// <param name="target"></param>
+        private void CreateScatterplot(ZedGraphControl zgc, double[,] graph, int[] target)
         {
-            GraphPane myPane = zgc.GraphPane;
-            myPane.CurveList.Clear();
-
-            // Set the titles
-            myPane.Title.IsVisible = false;
-            myPane.XAxis.Title.Text = columnNames[0];
-            myPane.YAxis.Title.Text = columnNames[1];
-
-
-            // Classification problem
-            PointPairList list1 = new PointPairList(); // Z = -1
-            PointPairList list2 = new PointPairList(); // Z = +1
-
-            int lastIndex = graph.GetLength(1) - 1;
-
-            for (int i = 0; i < graph.GetLength(0); i++)
+            var Y = readMatDataUtil.getY(graph, currcentView);
+            //为空则不进行操作
+            if (Y != null)
             {
-                if (graph[i, lastIndex] == -1)
-                    list1.Add(graph[i, 0], graph[i, 1]);
-                if (graph[i, lastIndex] == 1)
-                    list2.Add(graph[i, 0], graph[i, 1]);
+                GraphPane myPane = zgc.GraphPane;
+                myPane.CurveList.Clear();
+                // Set the titles
+                myPane.Title.IsVisible = false;
+                myPane.XAxis.Title.Text = ReadMatData.columnNames[0];
+                myPane.YAxis.Title.Text = ReadMatData.columnNames[1];
+                // Classification problem
+                PointPairList list1 = new PointPairList(); // Z = -1
+
+                for (int i = 0; i < Y.GetLength(0); i++)
+                {
+                    list1.Add(Y[i][0], Y[i][1]);
+                }
+                // Add the curve
+                LineItem myCurve = myPane.AddCurve("散点图", list1, Color.Red, SymbolType.Diamond);
+
+                myCurve.Line.IsVisible = false;
+                myCurve.Symbol.Border.IsVisible = false;
+                myCurve.Symbol.Fill = new Fill(Color.Blue);
+
+                myPane.Fill = new Fill(Color.WhiteSmoke);
+
+                zgc.AxisChange();
+                zgc.Invalidate();
             }
-
-
-
-            // Add the curve
-            LineItem myCurve = myPane.AddCurve("G1", list1, Color.Red, SymbolType.Diamond);
-            myCurve.Line.IsVisible = false;
-            myCurve.Symbol.Border.IsVisible = false;
-            myCurve.Symbol.Fill = new Fill(Color.Blue);
-
-            myCurve = myPane.AddCurve("G2", list2, Color.Green, SymbolType.Diamond);
-            myCurve.Line.IsVisible = false;
-            myCurve.Symbol.Border.IsVisible = false;
-            myCurve.Symbol.Fill = new Fill(Color.Green);
-
-
-            myPane.Fill = new Fill(Color.WhiteSmoke);
-
-            zgc.AxisChange();
-            zgc.Invalidate();
         }
+
 
         /// <summary>
         /// 上传文件
@@ -319,19 +218,20 @@ namespace SystemControl
 
         private void graphInput_DoubleClick(object sender, EventArgs e)
         {
-            if (sourceMatrix != null && sourceMatrix.GetTotalLength() > 0)
-            {
-                ScatterplotBox.Show("大图", sourceMatrix.GetColumns(0, 1), sourceMatrix.GetColumn(3).ToInt32()).Hold();
-            }
+            //if (sourceMatrix != null && sourceMatrix.GetTotalLength() > 0)
+            //{
+            //    ScatterplotBox.Show("大图", sourceMatrix.GetColumns(0, 1), sourceMatrix.GetColumn(3).ToInt32()).Hold();
+            //}
         }
 
         private void btnCreate_Click(object sender, EventArgs e)
         {
 
         }
-
+        double[][] observations;
         private void btnSampleRunAnalysis_Click(object sender, EventArgs e)
         {
+            string extension = Path.GetExtension(fileDataName.Text);
 
             if (rbKMeans.Checked)
             {
@@ -347,21 +247,30 @@ namespace SystemControl
                 MessageBox.Show("Please load some data first.");
                 return;
             }
+            
             // Finishes and save any pending changes to the given data
             dgvLearningSource.EndEdit();
 
+            double[,] table=null;
+            int[] expected=null;
+            if (extension == ".csv" || extension == ".xls" || extension == ".xlsx")
+            {
+                table = readOfficeFile.getMatrixTrain();
+                expected = readOfficeFile.getMatrixTarget().ToInt32();
+            }
+            else {
+                table = readMatDataUtil.getDataView(currcentView).ToDouble();
+                expected = readMatDataUtil.getDataViewGnd(currcentView);
+            }
 
-
-            // Creates a matrix from the entire source data table
-            double[,] table = (dgvLearningSource.DataSource as DataTable).ToMatrix(out columnNames);
 
             // Get only the input vector values (first two columns)
             //用来进行可视化的维度展示
-            double[][] inputs = table.GetColumns(0, 1).ToJagged();
-            //用来进行训练的数据
-            double[,] table2 = table;
-            observations = table2.RemoveColumn(table.GetLength(1) - 1).ToJagged();
+            double[][] inputs = table.ToJagged();
 
+            //用来进行训练的数据
+
+           observations = inputs;
             try
             {
                 // Create and run the specified algorithm
@@ -369,7 +278,7 @@ namespace SystemControl
 
                 this.clustering = this.learning.Learn(observations);
 
-                lbStatus.Text = "聚类完成.....";
+              
 
                 // Update the scatter plot
                 CreateScatterplot(graph, inputs, k);
@@ -380,9 +289,6 @@ namespace SystemControl
 
                 updateGraph(classifications);
 
-
-                int[] expected = table.GetColumn(table.GetLength(1) - 1).ToInt32();
-                ;
 
                 StringBuilder sb = new StringBuilder();
                 expected.ToList().ForEach(u =>
@@ -401,14 +307,14 @@ namespace SystemControl
                 Dictionary<string, string> dic = new Dictionary<string, string>();
                 dic.Add("Predicted", Predicted);
                 dic.Add("Expected", Expected);
-                String jsonResult = WebUtil.Post3(Url_DUG, dic);
+                //String jsonResult = WebUtil.Post3(Url_DUG, dic);
 
-                MessageBox.Show(jsonResult);
+                //MessageBox.Show(jsonResult);
             }
             catch (ConvergenceException)
             {
-                lbStatus.Text = "Convergence could not be attained. " +
-                    "The learned clustering might still be usable.";
+                //lbStatus.Text = "Convergence could not be attained. " +
+                //    "The learned clustering might still be usable.";
             }
 
 
@@ -416,10 +322,11 @@ namespace SystemControl
 
         private void updateGraph(int[] classifications)
         {
-
+            observations = ReadMatData.getYOthres(observations.ToMatrix());
             // Paint the clusters accordingly
             for (int i = 0; i < k + 1; i++)
                 graph.GraphPane.CurveList[i].Clear();
+
 
             for (int j = 0; j < observations.Length; j++)
             {
@@ -473,16 +380,19 @@ namespace SystemControl
             this.k = (int)numKMeans.Value;
         }
 
-        public void CreateScatterplot(ZedGraphControl zgc, double[][] graph, int n)
+        public void CreateScatterplot(ZedGraphControl zgc, double[][] graphs, int n)
         {
+
+            var graph = ReadMatData.getYOthres(graphs.ToMatrix());
+
             GraphPane myPane = zgc.GraphPane;
             myPane.CurveList.Clear();
 
             // Set graph pane object
             // Set the titles
             myPane.Title.Text = fileDataName.Text;
-            myPane.XAxis.Title.Text = columnNames[0];
-            myPane.YAxis.Title.Text = columnNames[1];
+            myPane.XAxis.Title.Text = ReadMatData.columnNames[0];
+            myPane.YAxis.Title.Text = ReadMatData.columnNames[1];
             //myPane.XAxis.Scale.Max = 10;
             //myPane.XAxis.Scale.Min = -10;
             //myPane.YAxis.Scale.Max = 10;
@@ -498,8 +408,6 @@ namespace SystemControl
             PointPairList list = new PointPairList();
             for (int i = 0; i < graph.Length; i++)
                 list.Add(graph[i][0], graph[i][1]);
-
-
             // Add the curve for the mixture points
             LineItem myCurve = myPane.AddCurve("Mixture", list, Color.Gray, SymbolType.Diamond);
             myCurve.Line.IsVisible = false;
@@ -525,11 +433,19 @@ namespace SystemControl
 
         private void lastView_Click(object sender, EventArgs e)
         {
-            int attribute = 0;
             currcentView = currcentView - 1;
             if (currcentView < int.Parse(viewNum.Text) && currcentView >= 0)
             {
-                readMatData(out attribute);
+                //前五个属性进行展示
+                this.dgvLearningSource.DataSource = readMatDataUtil.getDataTableByIndex(currcentView, ReadMatData.columnNames.Length);
+
+                //columnNames为列名，本项目直接进行初始化，因为大部分的列属性信息都比较多。
+                if (ReadMatData.columnNames.GetTotalLength() > 0)
+                {
+                    sda = new DescriptiveAnalysis(ReadMatData.columnNames).Learn(readMatDataUtil.getDataTableByIndex(currcentView, ReadMatData.columnNames.Length).ToJagged());
+                    dgvDistributionMeasures.DataSource = sda.Measures;
+                }
+                CreateScatterplot(graphInput, readMatDataUtil.getDataTableAll(currcentView).ToMatrix(), readMatDataUtil.getDataViewGnd(currcentView));
                 curView.Text = (currcentView + 1).ToString();
                 setLNView();
             }
@@ -537,11 +453,19 @@ namespace SystemControl
 
         private void nextView_Click(object sender, EventArgs e)
         {
-            int attribute = 0;
             currcentView = currcentView + 1;
             if (currcentView < int.Parse(viewNum.Text) && currcentView >= 0)
             {
-                readMatData(out attribute);
+                //前五个属性进行展示
+                this.dgvLearningSource.DataSource = readMatDataUtil.getDataTableByIndex(currcentView, ReadMatData.columnNames.Length);
+
+                //columnNames为列名，本项目直接进行初始化，因为大部分的列属性信息都比较多。
+                if (ReadMatData.columnNames.GetTotalLength() > 0)
+                {
+                    sda = new DescriptiveAnalysis(ReadMatData.columnNames).Learn(readMatDataUtil.getDataTableByIndex(currcentView, ReadMatData.columnNames.Length).ToJagged());
+                    dgvDistributionMeasures.DataSource = sda.Measures;
+                }
+                CreateScatterplot(graphInput, readMatDataUtil.getDataTableAll(currcentView).ToMatrix(), readMatDataUtil.getDataViewGnd(currcentView));
                 curView.Text = (currcentView + 1).ToString();
                 setLNView();
             }
@@ -555,22 +479,38 @@ namespace SystemControl
             openFileDialog.FilterIndex = 1;
             if (openFileDialog.ShowDialog() == DialogResult.OK)
             {
-                fName = openFileDialog.FileName;
+                var fName = openFileDialog.FileName;
                 string extension = Path.GetExtension(fName);
-
                 fileDataName.Text = Path.GetFileName(fName);
                 dirLocal.Text = Path.GetDirectoryName(fName);
-
-                MatNode gnd = null;
-                int attribute = 0;
-                #region 读取mat文件
-                if (extension == ".mat")
+                if (extension != ".mat")
                 {
-                    gnd = readMatData(out attribute);
+                    MessageBox.Show("请输入matlab文件...");
+                    return;
                 }
-                #endregion
+                readMatDataUtil = new ReadMatData(fName);
+                readMatDataUtil.initReader();
+                int[] target = readMatDataUtil.getDataViewGnd(0);
+                cluterNum.Text = target.Distinct().Count().ToString();
+                numKMeans.Value = target.Distinct().Count();
+                numGaussians.Value = target.Distinct().Count();
+                samplesNUm.Text = target.Length.ToString();
+                viewNum.Text = ReadMatData.ViewNumSum.ToString();
+                curView.Text = (currcentView + 1).ToString();
+                attributeLength.Text = readMatDataUtil.getDataViewAttribute().ToString();
 
-                if (multiViewFlag == 1)
+                //前五个属性进行展示
+                this.dgvLearningSource.DataSource = readMatDataUtil.getDataTableByIndex(0, ReadMatData.columnNames.Length);
+
+                //columnNames为列名，本项目直接进行初始化，因为大部分的列属性信息都比较多。
+                if (ReadMatData.columnNames.GetTotalLength() > 0)
+                {
+                    sda = new DescriptiveAnalysis(ReadMatData.columnNames).Learn(readMatDataUtil.getDataTableByIndex(0, ReadMatData.columnNames.Length).ToJagged());
+                    dgvDistributionMeasures.DataSource = sda.Measures;
+                }
+                CreateScatterplot(graphInput, readMatDataUtil.getDataTableAll(0).ToMatrix(), target);
+
+                if (readMatDataUtil.MultiViewFlag)
                 {
                     setLNView();
                 }
@@ -579,17 +519,11 @@ namespace SystemControl
                     nextView.Enabled = false;
                     lastView.Enabled = false;
                 }
-                byte[,] data1 = (byte[,])gnd[0].Value; ;
-                var target = data1.Transpose().To<int[,]>().GetColumn(0);
-                cluterNum.Text = target.Distinct().Count().ToString();
-                numKMeans.Value = target.Distinct().Count();
-                numGaussians.Value = target.Distinct().Count();
-                samplesNUm.Text = sourceMatrix.GetLength(1).ToString();
-                viewNum.Text = viewNumSum.ToString();
-                curView.Text = (currcentView + 1).ToString();
-                attributeLength.Text = attribute.ToString();
 
-                if (viewNumSum == 1)
+               
+
+
+                if (ReadMatData.ViewNumSum == 1)
                 {
                     adjustView.Enabled = false;
                 }
@@ -597,6 +531,7 @@ namespace SystemControl
                 {
                     adjustView.Enabled = true;
                 }
+
             }
         }
 

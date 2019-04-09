@@ -22,5 +22,10 @@ namespace SystemControl
             Operate openCluster = new Operate();
             openCluster.ShowDialog();
         }
+
+        private void hnetwork_Click(object sender, EventArgs e)
+        {
+          
+        }
     }
 }

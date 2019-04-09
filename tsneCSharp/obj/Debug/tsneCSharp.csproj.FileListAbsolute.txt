@@ -2,3 +2,4 @@ H:\C#github\tsne_CSharp\tsneCSharp\tsneCSharp\bin\Debug\tsneCSharp.dll
 H:\C#github\tsne_CSharp\tsneCSharp\tsneCSharp\bin\Debug\tsneCSharp.pdb
 H:\C#github\tsne_CSharp\tsneCSharp\tsneCSharp\obj\Debug\tsneCSharp.dll
 H:\C#github\tsne_CSharp\tsneCSharp\tsneCSharp\obj\Debug\tsneCSharp.pdb
+H:\C#github\tsne_CSharp\tsneCSharp\tsneCSharp\obj\Debug\tsneCSharp.csprojResolveAssemblyReference.cache
