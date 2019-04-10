@@ -18,12 +18,27 @@ namespace WebUpload
 
         static void Main(string[] args)
         {
+            string str = File.ReadAllText(@"txt.txt");
+          
+            JsonReader reader = new JsonTextReader(new StringReader(str));
+
+            while (reader.Read())
+            {
+                Console.WriteLine(reader.TokenType + "\t\t" + reader.ValueType + "\t\t" + reader.Value + "\r\n");
+            }
+
+            ClusterLabel json=JsonConvert.DeserializeObject<ClusterLabel>(str);
+
+        }
+
+        private static void NewMethod()
+        {
             string localPath = "3sources.mat";
 
             // Create a .MAT reader for the file:
             var reader = new MatReader(localPath);
             MatNode data = reader["data"];
-            byte[,] data1 =(byte[,])data[0].Value;
+            byte[,] data1 = (byte[,])data[0].Value;
             Console.WriteLine(data1);
             double[,] mat = new double[data1.GetLength(0), data1.GetLength(1)];
             for (int i = 0; i < data1.GetLength(0); i++)
@@ -32,10 +47,10 @@ namespace WebUpload
                 {
                     mat[i, j] = data1[i, j];
                 }
-               
-            }
 
+            }
         }
+
         /// <summary>  
         /// byte数组转int数组  
         /// </summary>  

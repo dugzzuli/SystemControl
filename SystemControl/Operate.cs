@@ -6,6 +6,7 @@ using Accord.MachineLearning.Clustering;
 using Accord.Math;
 using Accord.Statistics.Analysis;
 using Accord.Statistics.Distributions.Fitting;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -31,8 +32,8 @@ namespace SystemControl
         /// <summary>
         /// 访问dugking的算法网站
         /// </summary>
-        public static string Url_DUG = "http://localhost:8080/SpringNMF/demo/getClusterInc";
-
+        public static string Url_DUG = "http://localhost:8080/SpringNMF/demo/getMVCLuster";
+        private static string uploadUrl = "http://localhost:8080/SpringNMF/demo/upload";
         /// <summary>
         /// 面板颜色选择
         /// </summary>
@@ -74,7 +75,7 @@ namespace SystemControl
                 fName = openFileDialog.FileName;
                 readOfficeFile = new ReadOfficeFile(fName);
                 readOfficeFile.initReader(this);
-                fileDataName.Text = readOfficeFile.FileDataName ;
+                fileDataName.Text = readOfficeFile.FileDataName;
                 dirLocal.Text = readOfficeFile.DirLocal;
                 var target = readOfficeFile.getMatrixTarget();
                 cluterNum.Text = target.Distinct().Count().ToString();
@@ -94,7 +95,7 @@ namespace SystemControl
                     sda = new DescriptiveAnalysis(ReadMatData.columnNames).Learn(readOfficeFile.getMatrixTrain().ToJagged());
                     dgvDistributionMeasures.DataSource = sda.Measures;
                 }
-            
+
                 if (ReadMatData.ViewNumSum == 1)
                 {
                     setLNView();
@@ -105,7 +106,7 @@ namespace SystemControl
                     lastView.Enabled = false;
                 }
 
-                
+
 
                 if (ReadMatData.ViewNumSum == 1)
                 {
@@ -119,7 +120,7 @@ namespace SystemControl
             //uploadFile(fName);
         }
 
-        
+
 
         private void setLNView()
         {
@@ -142,9 +143,9 @@ namespace SystemControl
 
 
         }
-       
-       
-      
+
+
+
 
         /// <summary>
         /// mat图绘制
@@ -192,7 +193,7 @@ namespace SystemControl
         /// <param name="fName"></param>
         private static void uploadFile(string fName)
         {
-            string url = "http://localhost:8080/SpringNMF/demo/upload";
+            string url = uploadUrl;
 
             List<FormItemModel> formDatas = new List<FormItemModel>();
             //添加文件
@@ -229,6 +230,8 @@ namespace SystemControl
 
         }
         double[][] observations;
+
+
         private void btnSampleRunAnalysis_Click(object sender, EventArgs e)
         {
             string extension = Path.GetExtension(fileDataName.Text);
@@ -247,18 +250,19 @@ namespace SystemControl
                 MessageBox.Show("Please load some data first.");
                 return;
             }
-            
+
             // Finishes and save any pending changes to the given data
             dgvLearningSource.EndEdit();
 
-            double[,] table=null;
-            int[] expected=null;
+            double[,] table = null;
+            int[] expected = null;
             if (extension == ".csv" || extension == ".xls" || extension == ".xlsx")
             {
                 table = readOfficeFile.getMatrixTrain();
                 expected = readOfficeFile.getMatrixTarget().ToInt32();
             }
-            else {
+            else
+            {
                 table = readMatDataUtil.getDataView(currcentView).ToDouble();
                 expected = readMatDataUtil.getDataViewGnd(currcentView);
             }
@@ -270,7 +274,7 @@ namespace SystemControl
 
             //用来进行训练的数据
 
-           observations = inputs;
+            observations = inputs;
             try
             {
                 // Create and run the specified algorithm
@@ -278,7 +282,7 @@ namespace SystemControl
 
                 this.clustering = this.learning.Learn(observations);
 
-              
+
 
                 // Update the scatter plot
                 CreateScatterplot(graph, inputs, k);
@@ -308,6 +312,7 @@ namespace SystemControl
                 dic.Add("Predicted", Predicted);
                 dic.Add("Expected", Expected);
                 //String jsonResult = WebUtil.Post3(Url_DUG, dic);
+                //String jsonResult = WebUtil.Post3(http://localhost:8080/SpringNMF/demo/getMVCLuster?method=MNMF&maxIter=100&relarErr=1, dic);
 
                 //MessageBox.Show(jsonResult);
             }
@@ -338,6 +343,26 @@ namespace SystemControl
             }
 
             graph.Invalidate();
+        }
+
+        private void updateGraph(ZedGraphControl mvCluster, double[][] observations2, int[] classifications)
+        {
+            observations2 = ReadMatData.getYOthres(observations2.ToMatrix());
+            // Paint the clusters accordingly
+            for (int i = 0; i < k + 1; i++)
+                mvCluster.GraphPane.CurveList[i].Clear();
+
+
+            for (int j = 0; j < observations2.Length; j++)
+            {
+                int c = classifications[j];
+
+                var curveList = mvCluster.GraphPane.CurveList[c + 1];
+                double[] point = observations2[j];
+                curveList.AddPoint(point[0], point[1]);
+            }
+
+            mvCluster.Invalidate();
         }
 
 
@@ -520,7 +545,7 @@ namespace SystemControl
                     lastView.Enabled = false;
                 }
 
-               
+
 
 
                 if (ReadMatData.ViewNumSum == 1)
@@ -547,6 +572,31 @@ namespace SystemControl
                    rectangle,
                    dgvLearningSource.RowHeadersDefaultCellStyle.ForeColor,
                    TextFormatFlags.VerticalCenter | TextFormatFlags.Right);
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            string fname = readMatDataUtil.FName;
+            //uploadFile(fname);
+
+            if (MNMF.Checked)
+            {
+
+            }
+            else
+            {
+
+            }
+            Dictionary<string, string> dic = new Dictionary<string, string>();
+            dic.Add("datasets", "3sources.mat");
+            dic.Add("method", "MNMF");
+            dic.Add("maxIter", "100");
+            dic.Add("relarErr", "1");
+            String jsonResult = WebUtil.Post3(Url_DUG, dic);
+            ClusterLabel json = JsonConvert.DeserializeObject<ClusterLabel>(jsonResult);
+            CreateScatterplot(mvCluster, json.H, Convert.ToInt32(numericUpDown2.Value));
+            int[] classifications = json.Label;
+            updateGraph(mvCluster, json.H, classifications);
         }
     }
 

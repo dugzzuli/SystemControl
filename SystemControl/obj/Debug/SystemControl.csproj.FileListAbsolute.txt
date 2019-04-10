@@ -51,3 +51,6 @@ H:\C#github\tsne_CSharp\tsneCSharp\SystemControl\bin\Debug\zh-tw\ZedGraph.resour
 H:\C#github\tsne_CSharp\tsneCSharp\SystemControl\obj\Debug\SystemControl.Operate.resources
 H:\C#github\tsne_CSharp\tsneCSharp\SystemControl\obj\Debug\SystemControl.TableSelectDialog.resources
 H:\C#github\tsne_CSharp\tsneCSharp\SystemControl\obj\Debug\SystemControl.csprojResolveAssemblyReference.cache
+H:\C#github\tsne_CSharp\tsneCSharp\SystemControl\bin\Debug\Newtonsoft.Json.dll
+H:\C#github\tsne_CSharp\tsneCSharp\SystemControl\bin\Debug\Newtonsoft.Json.pdb
+H:\C#github\tsne_CSharp\tsneCSharp\SystemControl\bin\Debug\Newtonsoft.Json.xml
