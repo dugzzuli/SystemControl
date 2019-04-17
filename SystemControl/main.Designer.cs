@@ -42,9 +42,7 @@
             this.使用帮助ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.算法集合ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.App_1 = new System.Windows.Forms.Panel();
-            this.button1 = new System.Windows.Forms.Button();
             this.datacluster = new System.Windows.Forms.Button();
-            this.hnetwork = new System.Windows.Forms.Button();
             this.society = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
             this.Tps1 = new System.Windows.Forms.Label();
@@ -116,8 +114,9 @@
             // 数据生成ToolStripMenuItem
             // 
             this.数据生成ToolStripMenuItem.Name = "数据生成ToolStripMenuItem";
-            this.数据生成ToolStripMenuItem.Size = new System.Drawing.Size(124, 22);
+            this.数据生成ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.数据生成ToolStripMenuItem.Text = "数据生成";
+            this.数据生成ToolStripMenuItem.Click += new System.EventHandler(this.数据生成ToolStripMenuItem_Click);
             // 
             // 数据查看ToolStripMenuItem
             // 
@@ -149,52 +148,30 @@
             // App_1
             // 
             this.App_1.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.App_1.Controls.Add(this.button1);
             this.App_1.Controls.Add(this.datacluster);
-            this.App_1.Controls.Add(this.hnetwork);
             this.App_1.Controls.Add(this.society);
             this.App_1.Location = new System.Drawing.Point(307, 46);
             this.App_1.Name = "App_1";
             this.App_1.Size = new System.Drawing.Size(207, 309);
             this.App_1.TabIndex = 2;
             // 
-            // button1
-            // 
-            this.button1.Location = new System.Drawing.Point(28, 221);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(160, 44);
-            this.button1.TabIndex = 1;
-            this.button1.Text = "多视角聚类";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.datacluster_Click);
-            // 
             // datacluster
             // 
-            this.datacluster.Location = new System.Drawing.Point(28, 164);
+            this.datacluster.Location = new System.Drawing.Point(27, 190);
             this.datacluster.Name = "datacluster";
             this.datacluster.Size = new System.Drawing.Size(160, 44);
             this.datacluster.TabIndex = 1;
-            this.datacluster.Text = "单视角聚类";
+            this.datacluster.Text = "传感数据聚类";
             this.datacluster.UseVisualStyleBackColor = true;
             this.datacluster.Click += new System.EventHandler(this.datacluster_Click);
             // 
-            // hnetwork
-            // 
-            this.hnetwork.Location = new System.Drawing.Point(28, 101);
-            this.hnetwork.Name = "hnetwork";
-            this.hnetwork.Size = new System.Drawing.Size(160, 44);
-            this.hnetwork.TabIndex = 0;
-            this.hnetwork.Text = "异质网络";
-            this.hnetwork.UseVisualStyleBackColor = true;
-            this.hnetwork.Click += new System.EventHandler(this.hnetwork_Click);
-            // 
             // society
             // 
-            this.society.Location = new System.Drawing.Point(28, 37);
+            this.society.Location = new System.Drawing.Point(27, 63);
             this.society.Name = "society";
             this.society.Size = new System.Drawing.Size(160, 44);
             this.society.TabIndex = 0;
-            this.society.Text = "同质网络";
+            this.society.Text = "社会网络网络";
             this.society.UseVisualStyleBackColor = true;
             // 
             // label1
@@ -287,7 +264,6 @@
         private System.Windows.Forms.ToolStripMenuItem 可视化ToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem 工具ToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem 帮助ToolStripMenuItem;
-        private System.Windows.Forms.Button hnetwork;
         private System.Windows.Forms.Button society;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button datacluster;
@@ -303,7 +279,6 @@
         private System.Windows.Forms.ToolStripMenuItem 退出ToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem 数据生成ToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem 数据查看ToolStripMenuItem;
-        private System.Windows.Forms.Button button1;
     }
 }
 

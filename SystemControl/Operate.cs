@@ -16,6 +16,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using SystemControl.Util;
@@ -29,6 +30,7 @@ namespace SystemControl
 {
     public partial class Operate : Form
     {
+        public static string SVUrl_DUG = "http://localhost:8080/SpringNMF/demo/getSVCLuster";
         /// <summary>
         /// 访问dugking的算法网站
         /// </summary>
@@ -65,13 +67,14 @@ namespace SystemControl
 
         private void openfile_Click(object sender, EventArgs e)
         {
+            string fName = null;
             OpenFileDialog openFileDialog = new OpenFileDialog();
             openFileDialog.Filter = "Excel文件|*.xls|csv文件|*.csv|文本文件|*.txt|所有文件|*.*";
             openFileDialog.RestoreDirectory = true;
             openFileDialog.FilterIndex = 1;
             if (openFileDialog.ShowDialog() == DialogResult.OK)
             {
-                string fName = null;
+               
                 fName = openFileDialog.FileName;
                 readOfficeFile = new ReadOfficeFile(fName);
                 readOfficeFile.initReader(this);
@@ -117,7 +120,11 @@ namespace SystemControl
                     adjustView.Enabled = true;
                 }
             }
-            //uploadFile(fName);
+            Thread thread1 = new Thread(delegate () {
+                uploadFile(fName);
+            });
+            thread1.Start();
+          
         }
 
 
@@ -193,6 +200,10 @@ namespace SystemControl
         /// <param name="fName"></param>
         private static void uploadFile(string fName)
         {
+            if (string.IsNullOrEmpty(fName))
+            {
+                return;
+            }
             string url = uploadUrl;
 
             List<FormItemModel> formDatas = new List<FormItemModel>();
@@ -207,9 +218,11 @@ namespace SystemControl
 
             //提交表单
             string result = UploadFile.PostForm(url, formDatas);
-
-
-            MessageBox.Show("已上传" + "   返回信息：" + result.ToString());
+            json.Status json = JsonConvert.DeserializeObject<json.Status>(result);
+            if (json.Code != 200)
+            {
+                MessageBox.Show("上传失败....." );
+            }
         }
 
         private void graphInput_Load(object sender, EventArgs e)
@@ -245,18 +258,22 @@ namespace SystemControl
             {
                 k = (int)numGaussians.Value;
             }
+        
+         
             if (dgvLearningSource.DataSource == null)
             {
                 MessageBox.Show("Please load some data first.");
                 return;
             }
-
             // Finishes and save any pending changes to the given data
             dgvLearningSource.EndEdit();
 
+           
+
+        
             double[,] table = null;
             int[] expected = null;
-            if (extension == ".csv" || extension == ".xls" || extension == ".xlsx")
+            if (extension == ".csv" || extension == ".xls" )
             {
                 table = readOfficeFile.getMatrixTrain();
                 expected = readOfficeFile.getMatrixTarget().ToInt32();
@@ -274,7 +291,38 @@ namespace SystemControl
 
             //用来进行训练的数据
 
+
             observations = inputs;
+
+            if (GNMF.Checked)
+            {
+                k = (int)GMNMFClusterNUm.Value;
+
+                string fname = readOfficeFile.FName;
+
+                Dictionary<string, string> dic = new Dictionary<string, string>();
+                dic.Add("datasets", "iris.csv");
+                dic.Add("method", "GNMF");
+                dic.Add("maxIter", "100");
+                dic.Add("relarErr", "1");
+                dic.Add("alpha", "10");
+                dic.Add("samples_num", "150");
+                dic.Add("attributeLength", "4");
+                dic.Add("clusterNum", "3");
+                String jsonResult = WebUtil.Post3(SVUrl_DUG, dic);
+                ClusterLabel json = JsonConvert.DeserializeObject<ClusterLabel>(jsonResult);
+                if (json.Code == 200)
+                {
+                    CreateScatterplot(graph, json.H, Convert.ToInt32(GMNMFClusterNUm.Value));
+                    int[] classifications = json.Label;
+                    updateGraph(graph, json.H, classifications);
+                }
+                else {
+                    MessageBox.Show(json.Desc);
+                }
+                return;
+            }
+            else { 
             try
             {
                 // Create and run the specified algorithm
@@ -294,23 +342,23 @@ namespace SystemControl
                 updateGraph(classifications);
 
 
-                StringBuilder sb = new StringBuilder();
-                expected.ToList().ForEach(u =>
-                {
-                    sb.Append(u + ",");
-                });
+                //StringBuilder sb = new StringBuilder();
+                //expected.ToList().ForEach(u =>
+                //{
+                //    sb.Append(u + ",");
+                //});
 
-                StringBuilder sb2 = new StringBuilder();
-                classifications.ToList().ForEach(u =>
-                {
-                    sb2.Append(u + ",");
-                });
-                String Predicted = sb2.ToString().Trim(',');
-                String Expected = sb.ToString().Trim(',');
+                //StringBuilder sb2 = new StringBuilder();
+                //classifications.ToList().ForEach(u =>
+                //{
+                //    sb2.Append(u + ",");
+                //});
+                //String Predicted = sb2.ToString().Trim(',');
+                //String Expected = sb.ToString().Trim(',');
 
-                Dictionary<string, string> dic = new Dictionary<string, string>();
-                dic.Add("Predicted", Predicted);
-                dic.Add("Expected", Expected);
+                //Dictionary<string, string> dic = new Dictionary<string, string>();
+                //dic.Add("Predicted", Predicted);
+                //dic.Add("Expected", Expected);
                 //String jsonResult = WebUtil.Post3(Url_DUG, dic);
                 //String jsonResult = WebUtil.Post3(http://localhost:8080/SpringNMF/demo/getMVCLuster?method=MNMF&maxIter=100&relarErr=1, dic);
 
@@ -322,7 +370,7 @@ namespace SystemControl
                 //    "The learned clustering might still be usable.";
             }
 
-
+            }
         }
 
         private void updateGraph(int[] classifications)
@@ -347,6 +395,11 @@ namespace SystemControl
 
         private void updateGraph(ZedGraphControl mvCluster, double[][] observations2, int[] classifications)
         {
+            if (observations2.GetLength(0) != classifications.Length)
+            {
+                MessageBox.Show("聚类数目与样本数不一致...");
+                return;
+            }
             observations2 = ReadMatData.getYOthres(observations2.ToMatrix());
             // Paint the clusters accordingly
             for (int i = 0; i < k + 1; i++)

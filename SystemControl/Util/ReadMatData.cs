@@ -312,6 +312,11 @@ namespace SystemControl.Util
 
         public double[][] getY(double[,] graph, int index)
         {
+            if (graph.GetLength(1) == 2)
+            {
+                return graph.ToJagged();
+            }
+
             double[][] Y;
             TSNE tSNE = new TSNE()
             {
@@ -330,13 +335,18 @@ namespace SystemControl.Util
 
         public static double[][] getYOthres(double[,] graph)
         {
+            if (graph.GetLength(1) == 2)
+            {
+                return graph.ToJagged();
+            }
+
             double[][] Y;
             TSNE tSNE = new TSNE()
             {
                 Perplexity = 1.5
             };
             Y = tSNE.Transform(graph.ToJagged());
-
+          
             return Y;
         }
 

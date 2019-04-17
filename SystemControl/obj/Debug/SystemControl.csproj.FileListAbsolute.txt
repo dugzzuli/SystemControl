@@ -54,3 +54,4 @@ H:\C#github\tsne_CSharp\tsneCSharp\SystemControl\obj\Debug\SystemControl.csprojR
 H:\C#github\tsne_CSharp\tsneCSharp\SystemControl\bin\Debug\Newtonsoft.Json.dll
 H:\C#github\tsne_CSharp\tsneCSharp\SystemControl\bin\Debug\Newtonsoft.Json.pdb
 H:\C#github\tsne_CSharp\tsneCSharp\SystemControl\bin\Debug\Newtonsoft.Json.xml
+H:\C#github\tsne_CSharp\tsneCSharp\SystemControl\obj\Debug\SystemControl.MainForm.resources

@@ -29,11 +29,20 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle8 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle7 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
             this.tabPage3 = new System.Windows.Forms.TabPage();
+            this.mvCluster = new ZedGraph.ZedGraphControl();
+            this.groupBox9 = new System.Windows.Forms.GroupBox();
+            this.GMNMF = new System.Windows.Forms.RadioButton();
+            this.label12 = new System.Windows.Forms.Label();
+            this.numericUpDown1 = new System.Windows.Forms.NumericUpDown();
+            this.button1 = new System.Windows.Forms.Button();
+            this.MNMF = new System.Windows.Forms.RadioButton();
+            this.label11 = new System.Windows.Forms.Label();
+            this.numericUpDown2 = new System.Windows.Forms.NumericUpDown();
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.groupBox8 = new System.Windows.Forms.GroupBox();
             this.clusterInc = new System.Windows.Forms.DataGridView();
@@ -43,8 +52,11 @@
             this.cbBalanced = new System.Windows.Forms.CheckBox();
             this.btnSampleRunAnalysis = new System.Windows.Forms.Button();
             this.rbKMeans = new System.Windows.Forms.RadioButton();
+            this.label10 = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
+            this.GNMF = new System.Windows.Forms.RadioButton();
             this.label5 = new System.Windows.Forms.Label();
+            this.GMNMFClusterNUm = new System.Windows.Forms.NumericUpDown();
             this.rbGMM = new System.Windows.Forms.RadioButton();
             this.numGaussians = new System.Windows.Forms.NumericUpDown();
             this.numKMeans = new System.Windows.Forms.NumericUpDown();
@@ -90,18 +102,16 @@
             this.opendb = new System.Windows.Forms.Button();
             this.openurl = new System.Windows.Forms.Button();
             this.Stepmethod = new System.Windows.Forms.TabControl();
-            this.mvCluster = new ZedGraph.ZedGraphControl();
-            this.groupBox9 = new System.Windows.Forms.GroupBox();
-            this.button1 = new System.Windows.Forms.Button();
-            this.MNMF = new System.Windows.Forms.RadioButton();
-            this.label11 = new System.Windows.Forms.Label();
-            this.numericUpDown2 = new System.Windows.Forms.NumericUpDown();
             this.tabPage3.SuspendLayout();
+            this.groupBox9.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown2)).BeginInit();
             this.tabPage2.SuspendLayout();
             this.groupBox8.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.clusterInc)).BeginInit();
             this.groupBox6.SuspendLayout();
             this.groupBox7.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.GMNMFClusterNUm)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numGaussians)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numKMeans)).BeginInit();
             this.tabPage1.SuspendLayout();
@@ -114,8 +124,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.dgvLearningSource)).BeginInit();
             this.groupBox1.SuspendLayout();
             this.Stepmethod.SuspendLayout();
-            this.groupBox9.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown2)).BeginInit();
             this.SuspendLayout();
             // 
             // tabPage3
@@ -128,6 +136,132 @@
             this.tabPage3.TabIndex = 2;
             this.tabPage3.Text = "多视角聚类";
             this.tabPage3.UseVisualStyleBackColor = true;
+            // 
+            // mvCluster
+            // 
+            this.mvCluster.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.mvCluster.Location = new System.Drawing.Point(265, 0);
+            this.mvCluster.Name = "mvCluster";
+            this.mvCluster.ScrollGrace = 0D;
+            this.mvCluster.ScrollMaxX = 0D;
+            this.mvCluster.ScrollMaxY = 0D;
+            this.mvCluster.ScrollMaxY2 = 0D;
+            this.mvCluster.ScrollMinX = 0D;
+            this.mvCluster.ScrollMinY = 0D;
+            this.mvCluster.ScrollMinY2 = 0D;
+            this.mvCluster.Size = new System.Drawing.Size(893, 603);
+            this.mvCluster.TabIndex = 11;
+            this.mvCluster.UseExtendedPrintDialog = true;
+            // 
+            // groupBox9
+            // 
+            this.groupBox9.Controls.Add(this.GMNMF);
+            this.groupBox9.Controls.Add(this.label12);
+            this.groupBox9.Controls.Add(this.numericUpDown1);
+            this.groupBox9.Controls.Add(this.button1);
+            this.groupBox9.Controls.Add(this.MNMF);
+            this.groupBox9.Controls.Add(this.label11);
+            this.groupBox9.Controls.Add(this.numericUpDown2);
+            this.groupBox9.Dock = System.Windows.Forms.DockStyle.Left;
+            this.groupBox9.Location = new System.Drawing.Point(0, 0);
+            this.groupBox9.Name = "groupBox9";
+            this.groupBox9.Size = new System.Drawing.Size(265, 603);
+            this.groupBox9.TabIndex = 12;
+            this.groupBox9.TabStop = false;
+            this.groupBox9.Text = "算法及设置";
+            // 
+            // GMNMF
+            // 
+            this.GMNMF.AutoSize = true;
+            this.GMNMF.Location = new System.Drawing.Point(19, 98);
+            this.GMNMF.Name = "GMNMF";
+            this.GMNMF.Size = new System.Drawing.Size(53, 16);
+            this.GMNMF.TabIndex = 9;
+            this.GMNMF.Text = "GMNMF";
+            this.GMNMF.UseVisualStyleBackColor = true;
+            // 
+            // label12
+            // 
+            this.label12.AutoSize = true;
+            this.label12.Location = new System.Drawing.Point(45, 124);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(17, 12);
+            this.label12.TabIndex = 8;
+            this.label12.Text = "K:";
+            // 
+            // numericUpDown1
+            // 
+            this.numericUpDown1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.numericUpDown1.Location = new System.Drawing.Point(107, 122);
+            this.numericUpDown1.Maximum = new decimal(new int[] {
+            1000,
+            0,
+            0,
+            0});
+            this.numericUpDown1.Name = "numericUpDown1";
+            this.numericUpDown1.Size = new System.Drawing.Size(98, 21);
+            this.numericUpDown1.TabIndex = 10;
+            this.numericUpDown1.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.numericUpDown1.Value = new decimal(new int[] {
+            6,
+            0,
+            0,
+            0});
+            // 
+            // button1
+            // 
+            this.button1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.button1.Location = new System.Drawing.Point(6, 543);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(253, 40);
+            this.button1.TabIndex = 1;
+            this.button1.Text = "多视角聚类";
+            this.button1.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
+            // 
+            // MNMF
+            // 
+            this.MNMF.AutoSize = true;
+            this.MNMF.Checked = true;
+            this.MNMF.Location = new System.Drawing.Point(19, 19);
+            this.MNMF.Name = "MNMF";
+            this.MNMF.Size = new System.Drawing.Size(47, 16);
+            this.MNMF.TabIndex = 6;
+            this.MNMF.TabStop = true;
+            this.MNMF.Text = "MNMF";
+            this.MNMF.UseVisualStyleBackColor = true;
+            // 
+            // label11
+            // 
+            this.label11.AutoSize = true;
+            this.label11.Location = new System.Drawing.Point(45, 45);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(17, 12);
+            this.label11.TabIndex = 3;
+            this.label11.Text = "K:";
+            // 
+            // numericUpDown2
+            // 
+            this.numericUpDown2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.numericUpDown2.Location = new System.Drawing.Point(107, 43);
+            this.numericUpDown2.Maximum = new decimal(new int[] {
+            1000,
+            0,
+            0,
+            0});
+            this.numericUpDown2.Name = "numericUpDown2";
+            this.numericUpDown2.Size = new System.Drawing.Size(98, 21);
+            this.numericUpDown2.TabIndex = 7;
+            this.numericUpDown2.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.numericUpDown2.Value = new decimal(new int[] {
+            6,
+            0,
+            0,
+            0});
             // 
             // tabPage2
             // 
@@ -195,8 +329,11 @@
             this.groupBox7.Controls.Add(this.cbBalanced);
             this.groupBox7.Controls.Add(this.btnSampleRunAnalysis);
             this.groupBox7.Controls.Add(this.rbKMeans);
+            this.groupBox7.Controls.Add(this.label10);
             this.groupBox7.Controls.Add(this.label7);
+            this.groupBox7.Controls.Add(this.GNMF);
             this.groupBox7.Controls.Add(this.label5);
+            this.groupBox7.Controls.Add(this.GMNMFClusterNUm);
             this.groupBox7.Controls.Add(this.rbGMM);
             this.groupBox7.Controls.Add(this.numGaussians);
             this.groupBox7.Controls.Add(this.numKMeans);
@@ -244,6 +381,15 @@
             this.rbKMeans.Text = "K-Means";
             this.rbKMeans.UseVisualStyleBackColor = true;
             // 
+            // label10
+            // 
+            this.label10.AutoSize = true;
+            this.label10.Location = new System.Drawing.Point(45, 202);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(53, 12);
+            this.label10.TabIndex = 3;
+            this.label10.Text = "聚类个数";
+            // 
             // label7
             // 
             this.label7.AutoSize = true;
@@ -253,6 +399,16 @@
             this.label7.TabIndex = 3;
             this.label7.Text = "Gaussians";
             // 
+            // GNMF
+            // 
+            this.GNMF.AutoSize = true;
+            this.GNMF.Location = new System.Drawing.Point(19, 180);
+            this.GNMF.Name = "GNMF";
+            this.GNMF.Size = new System.Drawing.Size(47, 16);
+            this.GNMF.TabIndex = 6;
+            this.GNMF.Text = "GNMF";
+            this.GNMF.UseVisualStyleBackColor = true;
+            // 
             // label5
             // 
             this.label5.AutoSize = true;
@@ -261,6 +417,26 @@
             this.label5.Size = new System.Drawing.Size(17, 12);
             this.label5.TabIndex = 3;
             this.label5.Text = "K:";
+            // 
+            // GMNMFClusterNUm
+            // 
+            this.GMNMFClusterNUm.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.GMNMFClusterNUm.Location = new System.Drawing.Point(107, 201);
+            this.GMNMFClusterNUm.Maximum = new decimal(new int[] {
+            1000,
+            0,
+            0,
+            0});
+            this.GMNMFClusterNUm.Name = "GMNMFClusterNUm";
+            this.GMNMFClusterNUm.Size = new System.Drawing.Size(98, 21);
+            this.GMNMFClusterNUm.TabIndex = 7;
+            this.GMNMFClusterNUm.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.GMNMFClusterNUm.Value = new decimal(new int[] {
+            3,
+            0,
+            0,
+            0});
             // 
             // rbGMM
             // 
@@ -428,14 +604,14 @@
             this.dgvDistributionMeasures.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.dgvDistributionMeasures.BackgroundColor = System.Drawing.SystemColors.Window;
             this.dgvDistributionMeasures.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            dataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle5.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle5.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle5.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle5.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle5.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle5.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dgvDistributionMeasures.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle5;
+            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dgvDistributionMeasures.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
             this.dgvDistributionMeasures.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvDistributionMeasures.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.dataGridViewTextBoxColumn6,
@@ -448,16 +624,16 @@
             this.dataGridViewTextBoxColumn12,
             this.colMin,
             this.colLength});
-            dataGridViewCellStyle8.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle8.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle8.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle8.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle8.Format = "N5";
-            dataGridViewCellStyle8.NullValue = null;
-            dataGridViewCellStyle8.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle8.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle8.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dgvDistributionMeasures.DefaultCellStyle = dataGridViewCellStyle8;
+            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle4.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle4.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle4.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle4.Format = "N5";
+            dataGridViewCellStyle4.NullValue = null;
+            dataGridViewCellStyle4.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle4.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dgvDistributionMeasures.DefaultCellStyle = dataGridViewCellStyle4;
             this.dgvDistributionMeasures.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dgvDistributionMeasures.Location = new System.Drawing.Point(3, 17);
             this.dgvDistributionMeasures.Name = "dgvDistributionMeasures";
@@ -470,9 +646,9 @@
             // 
             this.dataGridViewTextBoxColumn6.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
             this.dataGridViewTextBoxColumn6.DataPropertyName = "Name";
-            dataGridViewCellStyle6.Format = "N0";
-            dataGridViewCellStyle6.NullValue = null;
-            this.dataGridViewTextBoxColumn6.DefaultCellStyle = dataGridViewCellStyle6;
+            dataGridViewCellStyle2.Format = "N0";
+            dataGridViewCellStyle2.NullValue = null;
+            this.dataGridViewTextBoxColumn6.DefaultCellStyle = dataGridViewCellStyle2;
             this.dataGridViewTextBoxColumn6.HeaderText = "Column";
             this.dataGridViewTextBoxColumn6.Name = "dataGridViewTextBoxColumn6";
             this.dataGridViewTextBoxColumn6.ReadOnly = true;
@@ -537,9 +713,9 @@
             // colLength
             // 
             this.colLength.DataPropertyName = "Length";
-            dataGridViewCellStyle7.Format = "N";
-            dataGridViewCellStyle7.NullValue = null;
-            this.colLength.DefaultCellStyle = dataGridViewCellStyle7;
+            dataGridViewCellStyle3.Format = "N";
+            dataGridViewCellStyle3.NullValue = null;
+            this.colLength.DefaultCellStyle = dataGridViewCellStyle3;
             this.colLength.HeaderText = "Length";
             this.colLength.Name = "colLength";
             this.colLength.ReadOnly = true;
@@ -764,90 +940,6 @@
             this.Stepmethod.Size = new System.Drawing.Size(1166, 629);
             this.Stepmethod.TabIndex = 0;
             // 
-            // mvCluster
-            // 
-            this.mvCluster.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.mvCluster.Location = new System.Drawing.Point(265, 0);
-            this.mvCluster.Name = "mvCluster";
-            this.mvCluster.ScrollGrace = 0D;
-            this.mvCluster.ScrollMaxX = 0D;
-            this.mvCluster.ScrollMaxY = 0D;
-            this.mvCluster.ScrollMaxY2 = 0D;
-            this.mvCluster.ScrollMinX = 0D;
-            this.mvCluster.ScrollMinY = 0D;
-            this.mvCluster.ScrollMinY2 = 0D;
-            this.mvCluster.Size = new System.Drawing.Size(893, 603);
-            this.mvCluster.TabIndex = 11;
-            this.mvCluster.UseExtendedPrintDialog = true;
-            // 
-            // groupBox9
-            // 
-            this.groupBox9.Controls.Add(this.button1);
-            this.groupBox9.Controls.Add(this.MNMF);
-            this.groupBox9.Controls.Add(this.label11);
-            this.groupBox9.Controls.Add(this.numericUpDown2);
-            this.groupBox9.Dock = System.Windows.Forms.DockStyle.Left;
-            this.groupBox9.Location = new System.Drawing.Point(0, 0);
-            this.groupBox9.Name = "groupBox9";
-            this.groupBox9.Size = new System.Drawing.Size(265, 603);
-            this.groupBox9.TabIndex = 12;
-            this.groupBox9.TabStop = false;
-            this.groupBox9.Text = "算法及设置";
-            // 
-            // button1
-            // 
-            this.button1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.button1.Location = new System.Drawing.Point(6, 543);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(253, 40);
-            this.button1.TabIndex = 1;
-            this.button1.Text = "多视角聚类";
-            this.button1.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
-            // 
-            // MNMF
-            // 
-            this.MNMF.AutoSize = true;
-            this.MNMF.Checked = true;
-            this.MNMF.Location = new System.Drawing.Point(19, 19);
-            this.MNMF.Name = "MNMF";
-            this.MNMF.Size = new System.Drawing.Size(47, 16);
-            this.MNMF.TabIndex = 6;
-            this.MNMF.TabStop = true;
-            this.MNMF.Text = "MNMF";
-            this.MNMF.UseVisualStyleBackColor = true;
-            // 
-            // label11
-            // 
-            this.label11.AutoSize = true;
-            this.label11.Location = new System.Drawing.Point(45, 45);
-            this.label11.Name = "label11";
-            this.label11.Size = new System.Drawing.Size(17, 12);
-            this.label11.TabIndex = 3;
-            this.label11.Text = "K:";
-            // 
-            // numericUpDown2
-            // 
-            this.numericUpDown2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.numericUpDown2.Location = new System.Drawing.Point(107, 43);
-            this.numericUpDown2.Maximum = new decimal(new int[] {
-            1000,
-            0,
-            0,
-            0});
-            this.numericUpDown2.Name = "numericUpDown2";
-            this.numericUpDown2.Size = new System.Drawing.Size(98, 21);
-            this.numericUpDown2.TabIndex = 7;
-            this.numericUpDown2.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.numericUpDown2.Value = new decimal(new int[] {
-            6,
-            0,
-            0,
-            0});
-            // 
             // Operate
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -859,12 +951,17 @@
             this.Name = "Operate";
             this.Text = "Operate";
             this.tabPage3.ResumeLayout(false);
+            this.groupBox9.ResumeLayout(false);
+            this.groupBox9.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown2)).EndInit();
             this.tabPage2.ResumeLayout(false);
             this.groupBox8.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.clusterInc)).EndInit();
             this.groupBox6.ResumeLayout(false);
             this.groupBox7.ResumeLayout(false);
             this.groupBox7.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.GMNMFClusterNUm)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numGaussians)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numKMeans)).EndInit();
             this.tabPage1.ResumeLayout(false);
@@ -879,9 +976,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.dgvLearningSource)).EndInit();
             this.groupBox1.ResumeLayout(false);
             this.Stepmethod.ResumeLayout(false);
-            this.groupBox9.ResumeLayout(false);
-            this.groupBox9.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown2)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -950,5 +1044,11 @@
         private System.Windows.Forms.RadioButton MNMF;
         private System.Windows.Forms.Label label11;
         private System.Windows.Forms.NumericUpDown numericUpDown2;
+        private System.Windows.Forms.Label label10;
+        private System.Windows.Forms.RadioButton GNMF;
+        private System.Windows.Forms.NumericUpDown GMNMFClusterNUm;
+        private System.Windows.Forms.RadioButton GMNMF;
+        private System.Windows.Forms.Label label12;
+        private System.Windows.Forms.NumericUpDown numericUpDown1;
     }
 }

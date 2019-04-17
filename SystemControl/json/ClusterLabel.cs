@@ -8,8 +8,36 @@ namespace SystemControl
 {
     public class ClusterLabel
     {
+        private int code;
+        private string desc;
         private double[][] h;
         private int[] label;
+
+        public int Code
+        {
+            get
+            {
+                return code;
+            }
+
+            set
+            {
+                code = value;
+            }
+        }
+
+        public string Desc
+        {
+            get
+            {
+                return desc;
+            }
+
+            set
+            {
+                desc = value;
+            }
+        }
 
         public double[][] H
         {

@@ -27,5 +27,11 @@ namespace SystemControl
         {
           
         }
+
+        private void 数据生成ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SystemControl.MainForm model = new MainForm();
+            model.ShowDialog();
+        }
     }
 }
